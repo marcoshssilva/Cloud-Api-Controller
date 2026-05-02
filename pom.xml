@@ -17,7 +17,7 @@
     </properties>
 
     <modules>
-        <!-- <module>my-submodule</module> -->
+        <module>cloud-api-controller-web</module>
     </modules>
 
 </project>
