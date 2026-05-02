@@ -11,6 +11,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.concurrent.TimeUnit;
+
 
 @Named("AppStartup")
 @ApplicationScoped
@@ -38,6 +42,7 @@ public class App implements ApplicationRunner {
 
     @Override
     public void run(String... args) throws ApplicationStartupErrorException {
+        LocalTime now = LocalTime.now();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 logger.info("Shutting down web server...");
@@ -50,6 +55,10 @@ public class App implements ApplicationRunner {
         try (WebServer server = webServer.start()) {
             logger.info("Web server started at {} on port {}", server.getHost(), server.getPort());
             logger.info("Management server started at {} on port {}", server.getManagementHost(), server.getManagementPort());
+            LocalTime end = LocalTime.now();
+            int nano = Duration.between(now, end).getNano();
+            long millis = TimeUnit.NANOSECONDS.toMillis(nano);
+            logger.info("Server uptime: {} ms", millis);
             CURRENT_THREAD.join();
         } catch (Exception e) {
             throw new ApplicationStartupErrorException("Failed to start web server", e);
