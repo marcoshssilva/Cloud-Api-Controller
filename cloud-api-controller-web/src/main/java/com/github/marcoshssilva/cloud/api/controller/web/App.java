@@ -22,7 +22,7 @@ public class App implements ApplicationRunner {
 
     private final WebServer webServer;
 
-    public @Inject App(WebServer webServer) {
+    public @Inject App(@Named("UndertowServerWebServer") WebServer webServer) {
         this.webServer = webServer;
     }
 
