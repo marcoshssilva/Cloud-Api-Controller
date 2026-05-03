@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 public class UndertowExchangeProcessorImpl {
     public void process(HttpServerExchange exchange, HttpRequestProcessor processor) {
@@ -30,14 +31,7 @@ public class UndertowExchangeProcessorImpl {
             }
             HttpRequest  request  = this.buildHttpRequest(exchange, bytes);
             HttpResponse response = processor.process(request);
-
-            exchange.setStatusCode(response.getStatusCode().getCode());
-            response.getHeaders().forEach(header -> {
-                for(String value : header.value()) {
-                    exchange.getResponseHeaders().add(new HttpString(header.name()), value);
-                }
-            });
-            exchange.getResponseSender().send(ByteBuffer.wrap(response.getBody()));
+            doResponse(exchange, response);
         });
     }
 
@@ -67,5 +61,11 @@ public class UndertowExchangeProcessorImpl {
             cookies.add(new HttpCookie(cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), maxAgeLong, cookie.isSecure(), cookie.isHttpOnly()));
         }
         return cookies;
+    }
+
+    void doResponse(HttpServerExchange exchange, HttpResponse response) {
+        response.getHeaders().forEach(header -> header.value().forEach(value -> exchange.getResponseHeaders().add(new HttpString(header.name()), value)));
+        exchange.setStatusCode(response.getStatusCode().getCode());
+        exchange.getResponseSender().send(ByteBuffer.wrap(Objects.nonNull(response.getBody()) ? response.getBody() : new byte[0]));
     }
 }
