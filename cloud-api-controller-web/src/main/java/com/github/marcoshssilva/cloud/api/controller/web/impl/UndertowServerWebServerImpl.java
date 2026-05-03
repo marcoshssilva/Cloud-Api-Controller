@@ -5,6 +5,7 @@ import com.github.marcoshssilva.cloud.api.controller.core.utils.LoggerHelper;
 import com.github.marcoshssilva.cloud.api.controller.web.data.WebServerStatus;
 import com.github.marcoshssilva.cloud.api.controller.web.exceptions.WebServerError;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpRequestProcessor;
+import com.github.marcoshssilva.cloud.api.controller.web.interfaces.UndertowExchangeProcessor;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.WebServer;
 
 import io.undertow.Undertow;
@@ -28,14 +29,16 @@ public class UndertowServerWebServerImpl implements WebServer {
     private final String host;
     private final String managementHost;
     private final HttpRequestProcessor httpRequestProcessor;
+    private final UndertowExchangeProcessor exchangeProcessor;
 
     @Inject
-    public UndertowServerWebServerImpl(@Named("HttpRequestProcessor") HttpRequestProcessor httpRequestProcessor) {
+    public UndertowServerWebServerImpl(HttpRequestProcessor httpRequestProcessor, UndertowExchangeProcessor exchangeProcessor) {
         this.managementPort = 8081;
         this.managementHost = "0.0.0.0";
         this.port = 8080;
         this.host = "0.0.0.0";
         this.httpRequestProcessor = httpRequestProcessor;
+        this.exchangeProcessor = exchangeProcessor;
 
         this.server = Undertow.builder().addHttpListener(port, host).addHttpListener(managementPort, managementHost)
                 .setHandler(this.buildHttpHandler())
@@ -107,6 +110,6 @@ public class UndertowServerWebServerImpl implements WebServer {
     }
 
     HttpHandler buildHttpHandler() {
-        return (exchange) -> new UndertowExchangeProcessorImpl().process(exchange, httpRequestProcessor);
+        return (exchange) -> exchangeProcessor.process(exchange, httpRequestProcessor);
     }
 }
