@@ -11,6 +11,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.util.Arrays;
+
 
 @Named("AppStartup")
 @ApplicationScoped
@@ -35,12 +37,18 @@ public class WebStartupInitializer implements ApplicationRunner {
             }
         }));
 
-        try (WebServer server = webServer.start()) {
+        try {
+            WebServer server = webServer.start();
             logger.info("Web server started at {} on port {}", server.getHost(), String.valueOf(server.getPort()));
             logger.info("Management server started at {} on port {}", server.getManagementHost(), String.valueOf(server.getManagementPort()));
-            CURRENT_THREAD.join();
+            if (Arrays.asList(args).contains("--block")) {
+                logger.info("Blocking main thread as --block argument is present");
+                CURRENT_THREAD.join();
+            }
         } catch (Exception e) {
-            CURRENT_THREAD.interrupt();
+            if (Arrays.asList(args).contains("--block")) {
+                CURRENT_THREAD.interrupt();
+            }
             throw new ApplicationStartupErrorException("Failed to start web server", e);
         }
     }
