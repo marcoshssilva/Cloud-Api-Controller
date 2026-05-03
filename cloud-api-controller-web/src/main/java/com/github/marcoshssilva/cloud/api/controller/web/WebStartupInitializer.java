@@ -44,6 +44,8 @@ public class WebStartupInitializer implements ApplicationRunner {
             if (Arrays.asList(args).contains("--block")) {
                 logger.info("Blocking main thread as --block argument is present");
                 CURRENT_THREAD.join();
+            } else {
+                logger.warn("argument --block is not present, main thread will not be blocked. If the application exits immediately, consider adding --block to the startup arguments.");
             }
         } catch (Exception e) {
             if (Arrays.asList(args).contains("--block")) {
