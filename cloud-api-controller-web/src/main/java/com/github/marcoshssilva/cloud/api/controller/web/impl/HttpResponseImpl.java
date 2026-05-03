@@ -42,4 +42,20 @@ public class HttpResponseImpl implements HttpResponse {
     public HttpStatusCode getStatusCode() {
         return this.statusCode;
     }
+
+    public void setHeaders(Collection<HttpHeader> headers) {
+        this.headers = headers;
+    }
+
+    public void setCookies(Collection<HttpCookie> cookies) {
+        this.cookies = cookies;
+    }
+
+    public void setBody(byte[] body) {
+        this.body = body;
+    }
+
+    public void setStatusCode(HttpStatusCode statusCode) {
+        this.statusCode = statusCode;
+    }
 }
