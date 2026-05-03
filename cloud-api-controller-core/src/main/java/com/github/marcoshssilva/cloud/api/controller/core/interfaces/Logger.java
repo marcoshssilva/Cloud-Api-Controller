@@ -9,4 +9,7 @@ public interface Logger {
     void error(String message, Exception e, String... args);
     void debug(String message);
     void debug(String message, String... args);
+
+    void warn(String message);
+    void warn(String message, String... args);
 }

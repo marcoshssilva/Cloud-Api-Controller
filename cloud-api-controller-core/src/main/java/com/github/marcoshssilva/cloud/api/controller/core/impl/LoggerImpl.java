@@ -52,6 +52,16 @@ public class LoggerImpl implements Logger {
     }
 
     @Override
+    public void warn(String message) {
+        logger.warn(message);
+    }
+
+    @Override
+    public void warn(String message, String... args) {
+        logger.warn(message, (Object[]) args);
+    }
+
+    @Override
     public Class<?> getClazz() {
         return clazz;
     }
