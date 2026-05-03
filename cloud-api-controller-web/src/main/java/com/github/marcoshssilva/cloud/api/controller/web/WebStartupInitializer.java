@@ -11,8 +11,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-import java.time.LocalTime;
-
 
 @Named("AppStartup")
 @ApplicationScoped
@@ -42,6 +40,7 @@ public class WebStartupInitializer implements ApplicationRunner {
             logger.info("Management server started at {} on port {}", server.getManagementHost(), String.valueOf(server.getManagementPort()));
             CURRENT_THREAD.join();
         } catch (Exception e) {
+            CURRENT_THREAD.interrupt();
             throw new ApplicationStartupErrorException("Failed to start web server", e);
         }
     }
