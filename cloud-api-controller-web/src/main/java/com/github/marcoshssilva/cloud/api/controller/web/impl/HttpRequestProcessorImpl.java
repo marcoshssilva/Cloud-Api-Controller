@@ -58,7 +58,7 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
                 
                 HttpOperation operationAnnotation = method.getAnnotation(HttpOperation.class);
                 String fullPath = (basePath + operationAnnotation.path()).replaceAll("//+", "/");
-                
+
                 if (fullPath.equals(requestPath)) {
                     if (requestMethod == HttpMethod.HEAD) {
                         return buildEmptyResponse(HttpStatusCode.OK);
@@ -68,7 +68,9 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
                         return invokeMethod(beanClass, method);
                     }
 
-                    return buildEmptyResponse(HttpStatusCode.METHOD_NOT_ALLOWED);
+                    if (Arrays.stream(operationAnnotation.method()).noneMatch(m -> m == requestMethod)) {
+                        return buildEmptyResponse(HttpStatusCode.METHOD_NOT_ALLOWED);
+                    }
                 }
             }
         }
