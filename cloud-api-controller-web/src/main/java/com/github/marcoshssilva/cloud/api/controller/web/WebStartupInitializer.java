@@ -1,10 +1,10 @@
 package com.github.marcoshssilva.cloud.api.controller.web;
 
 import com.github.marcoshssilva.cloud.api.controller.core.exceptions.ApplicationStartupErrorException;
-import com.github.marcoshssilva.cloud.api.controller.core.exceptions.WebServerError;
+import com.github.marcoshssilva.cloud.api.controller.web.exceptions.WebServerError;
 import com.github.marcoshssilva.cloud.api.controller.core.interfaces.ApplicationRunner;
 import com.github.marcoshssilva.cloud.api.controller.core.interfaces.Logger;
-import com.github.marcoshssilva.cloud.api.controller.core.interfaces.WebServer;
+import com.github.marcoshssilva.cloud.api.controller.web.interfaces.WebServer;
 import com.github.marcoshssilva.cloud.api.controller.core.utils.LoggerHelper;
 
 import jakarta.enterprise.context.ApplicationScoped;

@@ -1,7 +1,7 @@
 package com.github.marcoshssilva.cloud.api.controller.web;
 
-import com.github.marcoshssilva.cloud.api.controller.core.WebServerStatus;
-import com.github.marcoshssilva.cloud.api.controller.core.interfaces.WebServer;
+import com.github.marcoshssilva.cloud.api.controller.web.data.WebServerStatus;
+import com.github.marcoshssilva.cloud.api.controller.web.interfaces.WebServer;
 import com.github.marcoshssilva.cloud.api.controller.web.impl.UndertowServerWebServerImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

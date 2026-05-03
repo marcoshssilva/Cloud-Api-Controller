@@ -1,9 +1,9 @@
 package com.github.marcoshssilva.cloud.api.controller.web.impl;
 
-import com.github.marcoshssilva.cloud.api.controller.core.WebServerStatus;
-import com.github.marcoshssilva.cloud.api.controller.core.interfaces.WebServer;
+import com.github.marcoshssilva.cloud.api.controller.web.data.WebServerStatus;
+import com.github.marcoshssilva.cloud.api.controller.web.interfaces.WebServer;
 import com.github.marcoshssilva.cloud.api.controller.core.interfaces.Logger;
-import com.github.marcoshssilva.cloud.api.controller.core.exceptions.WebServerError;
+import com.github.marcoshssilva.cloud.api.controller.web.exceptions.WebServerError;
 import com.github.marcoshssilva.cloud.api.controller.core.utils.LoggerHelper;
 
 import io.undertow.Undertow;
@@ -13,7 +13,6 @@ import jakarta.inject.Named;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @ApplicationScoped
