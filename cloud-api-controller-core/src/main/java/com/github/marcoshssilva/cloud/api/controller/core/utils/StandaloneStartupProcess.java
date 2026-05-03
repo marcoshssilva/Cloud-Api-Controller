@@ -31,7 +31,6 @@ public final class StandaloneStartupProcess {
             WeldContainer container = weld.initialize();
             WeldContainerHelper.setContainer(container);
             ApplicationRunner runner = container.select(ApplicationRunner.class).get();
-            Runtime.getRuntime().addShutdownHook(new Thread(weld::shutdown));
             runner.run(args);
         } catch (ApplicationStartupErrorException e) {
             logger.error("Failed to start application", e);
