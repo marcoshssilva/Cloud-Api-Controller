@@ -1,23 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.github.marcoshssilva</groupId>
-    <artifactId>cloud-api-controller</artifactId>
-    <version>${revision}</version>
-    <packaging>pom</packaging>
-
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>1.0.0-RC-SNAPSHOT</revision>
-    </properties>
-
-    <modules>
-        <module>cloud-api-controller-web</module>
-    </modules>
-
+<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.marcoshssilva</groupId>
+  <artifactId>cloud-api-controller</artifactId>
+  <version>${revision}</version>
+  <packaging>pom</packaging>
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <revision>1.0.0-RC-SNAPSHOT</revision>
+  </properties>
+  <modules>
+    <module>cloud-api-controller-core</module>
+    <module>cloud-api-controller-parent</module>
+    <module>cloud-api-controller-web</module>
+  </modules>
 </project>

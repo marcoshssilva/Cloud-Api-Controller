@@ -1,42 +1,19 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.github.marcoshssilva</groupId>
-    <artifactId>cloud-api-controller</artifactId>
+    <artifactId>cloud-api-controller-parent</artifactId>
     <version>${revision}</version>
+    <relativePath>../cloud-api-controller-parent/pom.xml</relativePath>
   </parent>
-  <groupId>com.github.marcoshssilva</groupId>
   <artifactId>cloud-api-controller-web</artifactId>
-  <version>${revision}</version>
   <name>cloud-api-controller-web</name>
-  <url>http://maven.apache.org</url>
+  <version>${revision}</version>
+  <url>https://marcosilva.dev</url>
   <dependencies>
-    <!-- Weld SE Core (Implementação do CDI para Java SE) -->
-    <dependency>
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-core</artifactId>
-      <version>5.1.2.Final</version>
-    </dependency>
-    <!-- Log4j API -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>2.20.0</version>
-    </dependency>
-    <!-- Log4j Core (Implementação) -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <version>2.20.0</version>
-    </dependency>
-    <!-- ANSI colors support on Windows consoles -->
-    <dependency>
-      <groupId>org.fusesource.jansi</groupId>
-      <artifactId>jansi</artifactId>
-      <version>2.4.1</version>
-    </dependency>
     <!-- Undertow Web Server -->
     <dependency>
       <groupId>io.undertow</groupId>
@@ -48,44 +25,7 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>3.4.2</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>com.github.marcoshssilva.cloud.api.controller.web.App</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.6.0</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <createDependencyReducedPom>false</createDependencyReducedPom>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>com.github.marcoshssilva.cloud.api.controller.web.App</mainClass>
-                </transformer>
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.5.0</version>
-        <configuration>
-          <mainClass>com.github.marcoshssilva.cloud.api.controller.web.App</mainClass>
-        </configuration>
       </plugin>
     </plugins>
   </build>

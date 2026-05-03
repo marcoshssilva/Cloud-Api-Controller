@@ -1,6 +1,6 @@
-package com.github.marcoshssilva.cloud.api.controller.web;
+package com.github.marcoshssilva.cloud.api.controller.core.interfaces;
 
-import com.github.marcoshssilva.cloud.api.controller.web.exceptions.WebServerError;
+import com.github.marcoshssilva.cloud.api.controller.core.exceptions.WebServerError;
 
 public interface WebServer extends AutoCloseable {
     WebServer start() throws WebServerError;

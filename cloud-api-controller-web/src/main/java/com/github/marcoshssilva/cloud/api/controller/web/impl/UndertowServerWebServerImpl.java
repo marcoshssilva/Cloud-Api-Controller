@@ -1,15 +1,24 @@
 package com.github.marcoshssilva.cloud.api.controller.web.impl;
 
-import com.github.marcoshssilva.cloud.api.controller.web.WebServer;
-import com.github.marcoshssilva.cloud.api.controller.web.exceptions.WebServerError;
+import com.github.marcoshssilva.cloud.api.controller.core.interfaces.WebServer;
+import com.github.marcoshssilva.cloud.api.controller.core.interfaces.Logger;
+import com.github.marcoshssilva.cloud.api.controller.core.exceptions.WebServerError;
+import com.github.marcoshssilva.cloud.api.controller.core.utils.LoggerHelper;
+
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.concurrent.TimeUnit;
+
 @ApplicationScoped
 @Named("UndertowServerWebServer")
 public class UndertowServerWebServerImpl implements WebServer {
+    public static final Logger logger = LoggerHelper.getLogger(UndertowServerWebServerImpl.class);
+
     private final Undertow server;
     private final int port;
     private final int managementPort;
@@ -30,7 +39,14 @@ public class UndertowServerWebServerImpl implements WebServer {
     @Override
     public WebServer start() throws WebServerError {
         try {
+            LocalTime now = LocalTime.now();
             server.start();
+            LocalTime end = LocalTime.now();
+
+            int nano = Duration.between(now, end).getNano();
+            long millis = TimeUnit.NANOSECONDS.toMillis(nano);
+            logger.info("Server ready up. Time to startup: {} ms", String.valueOf(millis));
+
         } catch (Exception e) {
             throw new WebServerError("Failed to start web server", e);
         }
