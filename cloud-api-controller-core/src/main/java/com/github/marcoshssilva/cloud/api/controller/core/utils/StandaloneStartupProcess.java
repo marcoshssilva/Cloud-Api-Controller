@@ -28,6 +28,7 @@ public final class StandaloneStartupProcess {
         StandaloneStartupProcess.printBanner();
         Weld weld = new Weld();
         try (WeldContainer container = weld.initialize()) {
+            WeldContainerHelper.setContainer(container);
             ApplicationRunner runner = container.select(ApplicationRunner.class).get();
             runner.run(args);
         } catch (ApplicationStartupErrorException e) {
