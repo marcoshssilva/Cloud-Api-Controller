@@ -1,6 +1,7 @@
 package com.github.marcoshssilva.cloud.api.controller.web;
 
 import com.github.marcoshssilva.cloud.api.controller.web.data.WebServerStatus;
+import com.github.marcoshssilva.cloud.api.controller.web.impl.HttpRequestProcessorImpl;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.WebServer;
 import com.github.marcoshssilva.cloud.api.controller.web.impl.UndertowServerWebServerImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,7 @@ class WebStartupInitializerTests {
     @DisplayName("Should start and stop web server with success")
     @Test
     void shouldStartWebServerWithSuccess() throws Exception {
-        try(WebServer webServer = new UndertowServerWebServerImpl()) {
+        try(WebServer webServer = new UndertowServerWebServerImpl(new HttpRequestProcessorImpl())) {
             assertDoesNotThrow(webServer::start);
             assertEquals(WebServerStatus.RUNNING, webServer.getStatus());
             assertDoesNotThrow(webServer::stop);

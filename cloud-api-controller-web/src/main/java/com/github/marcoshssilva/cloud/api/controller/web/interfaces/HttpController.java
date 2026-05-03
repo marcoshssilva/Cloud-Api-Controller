@@ -1,6 +1,7 @@
 package com.github.marcoshssilva.cloud.api.controller.web.interfaces;
 
-import jakarta.enterprise.context.NormalScope;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Stereotype;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
@@ -13,8 +14,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({ TYPE })
 @Retention(RUNTIME)
 @Documented
-@NormalScope
 @Inherited
+@Stereotype
+@ApplicationScoped
 public @interface HttpController {
     String path() default "/" ;
 }

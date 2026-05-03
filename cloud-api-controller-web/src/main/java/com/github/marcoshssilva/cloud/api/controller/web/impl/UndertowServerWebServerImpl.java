@@ -1,14 +1,16 @@
 package com.github.marcoshssilva.cloud.api.controller.web.impl;
 
-import com.github.marcoshssilva.cloud.api.controller.web.data.WebServerStatus;
-import com.github.marcoshssilva.cloud.api.controller.web.interfaces.WebServer;
 import com.github.marcoshssilva.cloud.api.controller.core.interfaces.Logger;
-import com.github.marcoshssilva.cloud.api.controller.web.exceptions.WebServerError;
 import com.github.marcoshssilva.cloud.api.controller.core.utils.LoggerHelper;
+import com.github.marcoshssilva.cloud.api.controller.web.data.WebServerStatus;
+import com.github.marcoshssilva.cloud.api.controller.web.exceptions.WebServerError;
+import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpRequestProcessor;
+import com.github.marcoshssilva.cloud.api.controller.web.interfaces.WebServer;
 
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.time.Duration;
@@ -25,12 +27,15 @@ public class UndertowServerWebServerImpl implements WebServer {
     private final int managementPort;
     private final String host;
     private final String managementHost;
+    private final HttpRequestProcessor httpRequestProcessor;
 
-    public UndertowServerWebServerImpl() {
+    @Inject
+    public UndertowServerWebServerImpl(@Named("HttpRequestProcessor") HttpRequestProcessor httpRequestProcessor) {
         this.managementPort = 8081;
         this.managementHost = "0.0.0.0";
         this.port = 8080;
         this.host = "0.0.0.0";
+        this.httpRequestProcessor = httpRequestProcessor;
 
         this.server = Undertow.builder().addHttpListener(port, host).addHttpListener(managementPort, managementHost)
                 .setHandler(this.buildHttpHandler())
@@ -102,6 +107,6 @@ public class UndertowServerWebServerImpl implements WebServer {
     }
 
     HttpHandler buildHttpHandler() {
-        return (exchange) -> exchange.getResponseSender().send("Hello World!");
+        return (exchange) -> new UndertowExchangeProcessorImpl().process(exchange, httpRequestProcessor);
     }
 }
