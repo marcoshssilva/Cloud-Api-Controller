@@ -3,7 +3,6 @@ package com.github.marcoshssilva.cloud.api.controller.web.impl;
 import com.github.marcoshssilva.cloud.api.controller.core.interfaces.Logger;
 import com.github.marcoshssilva.cloud.api.controller.core.utils.LoggerHelper;
 import com.github.marcoshssilva.cloud.api.controller.core.utils.WeldContainerHelper;
-import com.github.marcoshssilva.cloud.api.controller.web.data.HttpHeader;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpMethod;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpStatusCode;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpController;
@@ -21,9 +20,8 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @ApplicationScoped
 @Named("HttpRequestProcessor")
@@ -61,8 +59,16 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
                 HttpOperation operationAnnotation = method.getAnnotation(HttpOperation.class);
                 String fullPath = (basePath + operationAnnotation.path()).replaceAll("//+", "/");
                 
-                if (fullPath.equals(requestPath) && operationAnnotation.method() == requestMethod) {
-                    return invokeMethod(beanClass, method);
+                if (fullPath.equals(requestPath)) {
+                    if (requestMethod == HttpMethod.HEAD) {
+                        return buildEmptyResponse(HttpStatusCode.OK);
+                    }
+
+                    if (Arrays.stream(operationAnnotation.method()).anyMatch(m -> m == requestMethod)) {
+                        return invokeMethod(beanClass, method);
+                    }
+
+                    return buildEmptyResponse(HttpStatusCode.METHOD_NOT_ALLOWED);
                 }
             }
         }
@@ -88,19 +94,15 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
     }
     
     private HttpResponse buildNotFound() {
-        return buildResponse(HttpStatusCode.NOT_FOUND);
+        return buildEmptyResponse(HttpStatusCode.NOT_FOUND);
     }
 
     private HttpResponse buildInternalServerError() {
-        return buildResponse(HttpStatusCode.INTERNAL_SERVER_ERROR);
+        return buildEmptyResponse(HttpStatusCode.INTERNAL_SERVER_ERROR);
     }
     
-    private HttpResponse buildResponse(HttpStatusCode statusCode) {
-        return new HttpResponseImpl(getDefaultHeaders(), List.of(), new byte[0], statusCode);
-    }
-
-    private Collection<HttpHeader> getDefaultHeaders() {
-        return List.of(new HttpHeader("server", Set.of("Cloud-API-Controller")));
+    private HttpResponse buildEmptyResponse(HttpStatusCode statusCode) {
+        return new HttpResponseImpl(List.of(), List.of(), new byte[0], statusCode);
     }
 
     private static BeanManager getBeanManagerFromContainer() {

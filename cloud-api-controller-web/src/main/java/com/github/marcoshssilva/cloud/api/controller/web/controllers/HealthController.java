@@ -14,11 +14,6 @@ import java.util.List;
 public class HealthController {
     @HttpOperation(method = HttpMethod.GET, path = "/status")
     public HttpResponse getStatus() {
-        return new HttpResponseImpl(
-                List.of(),
-                List.of(),
-                "{ \"status\": \"OK\" }".getBytes(StandardCharsets.UTF_8),
-                HttpStatusCode.OK
-        );
+        return new HttpResponseImpl(List.of(), List.of(), "{ \"status\": \"OK\" }".getBytes(StandardCharsets.UTF_8), HttpStatusCode.OK);
     }
 }

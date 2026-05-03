@@ -15,7 +15,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 @Inherited
 public @interface HttpOperation {
-    HttpMethod method() default HttpMethod.GET;
+    HttpMethod[] method() default { HttpMethod.GET };
     String path() default "";
     String contentType() default "application/json";
 }
