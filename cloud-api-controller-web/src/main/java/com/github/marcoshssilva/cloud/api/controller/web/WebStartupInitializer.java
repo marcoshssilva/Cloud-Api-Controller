@@ -28,7 +28,6 @@ public class WebStartupInitializer implements ApplicationRunner {
 
     @Override
     public void run(String... args) throws ApplicationStartupErrorException {
-        LocalTime now = LocalTime.now();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 logger.info("Shutting down web server...");
