@@ -1,5 +1,6 @@
 package com.github.marcoshssilva.cloud.api.controller.web.impl;
 
+import com.github.marcoshssilva.cloud.api.controller.core.WebServerStatus;
 import com.github.marcoshssilva.cloud.api.controller.core.interfaces.WebServer;
 import com.github.marcoshssilva.cloud.api.controller.core.interfaces.Logger;
 import com.github.marcoshssilva.cloud.api.controller.core.exceptions.WebServerError;
@@ -12,6 +13,7 @@ import jakarta.inject.Named;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @ApplicationScoped
@@ -62,6 +64,17 @@ public class UndertowServerWebServerImpl implements WebServer {
             throw new WebServerError("Failed to stop web server", e);
         }
         return this;
+    }
+
+    @Override
+    public WebServerStatus getStatus() {
+        try {
+            return (server.getListenerInfo().isEmpty() || server.getListenerInfo().stream().allMatch(Undertow.ListenerInfo::isSuspended)) ? WebServerStatus.STOPPED : WebServerStatus.RUNNING;
+        } catch (Exception e) {
+            logger.error("Failed to get web server status, returning STOPPED as default. Cause: {}", e, e.getMessage());
+            return WebServerStatus.STOPPED;
+        }
+
     }
 
     @Override
