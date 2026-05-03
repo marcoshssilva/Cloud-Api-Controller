@@ -19,7 +19,7 @@ class WebStartupInitializerTests {
     @Test
     void shouldTestIfAppRunWithHealthCheckOK() throws Exception {
         StandaloneStartupProcess.main(new String[0]);
-        WebServer server = WeldContainerHelper.getContainer().select(WebServer.class).iterator().next();
+        WebServer server = WeldContainerHelper.getContainer().select(WebServer.class).get();
         assertEquals(WebServerStatus.RUNNING, server.getStatus());
 
         HttpClient client   = HttpClient.newHttpClient();
