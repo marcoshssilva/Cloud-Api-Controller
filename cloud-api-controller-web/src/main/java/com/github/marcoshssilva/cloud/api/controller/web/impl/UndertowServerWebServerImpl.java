@@ -57,6 +57,7 @@ public class UndertowServerWebServerImpl implements WebServer {
     public WebServer stop() throws WebServerError {
         try {
             server.stop();
+            logger.info("Server stopped with success.");
         } catch (Exception e) {
             throw new WebServerError("Failed to stop web server", e);
         }
