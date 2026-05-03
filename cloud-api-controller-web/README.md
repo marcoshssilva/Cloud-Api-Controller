@@ -7,6 +7,7 @@ This is a web framework for building HTTP APIs using Java. It provides a simple 
 To build the docker image:
 
 ```bash
+mvn clean package
 cd cloud-api-controller-web
 docker build --tag cloud-api-controller-web:latest --file .\src\main\docker\Dockerfile --no-cache .
 docker run --name cloud-api-controller-web -p 8080:8080 -p 8081:8081 cloud-api-controller-web:latest 
