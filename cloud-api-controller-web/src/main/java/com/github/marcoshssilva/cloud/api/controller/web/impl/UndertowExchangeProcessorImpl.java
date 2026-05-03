@@ -7,9 +7,11 @@ import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpRequest;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpRequestProcessor;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpResponse;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.UndertowExchangeProcessor;
+
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
 import io.undertow.util.HttpString;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Named("UndertowExchangeProcessor")
+@Priority(Integer.MIN_VALUE)
 @ApplicationScoped
 public class UndertowExchangeProcessorImpl implements UndertowExchangeProcessor {
 

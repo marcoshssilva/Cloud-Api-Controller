@@ -7,6 +7,7 @@ import com.github.marcoshssilva.cloud.api.controller.core.interfaces.Logger;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.WebServer;
 import com.github.marcoshssilva.cloud.api.controller.core.utils.LoggerHelper;
 
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 
 
 @Named("AppStartup")
+@Priority(Integer.MIN_VALUE)
 @ApplicationScoped
 public class WebStartupInitializer implements ApplicationRunner {
     public static final Logger logger = LoggerHelper.getLogger(WebStartupInitializer.class);

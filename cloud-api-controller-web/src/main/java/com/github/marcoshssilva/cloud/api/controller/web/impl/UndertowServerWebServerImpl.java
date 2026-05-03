@@ -10,6 +10,7 @@ import com.github.marcoshssilva.cloud.api.controller.web.interfaces.WebServer;
 
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 @ApplicationScoped
 @Named("UndertowServerWebServer")
+@Priority(Integer.MIN_VALUE)
 public class UndertowServerWebServerImpl implements WebServer {
     public static final Logger logger = LoggerHelper.getLogger(UndertowServerWebServerImpl.class);
 
