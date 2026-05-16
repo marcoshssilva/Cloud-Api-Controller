@@ -5,12 +5,13 @@ import com.github.marcoshssilva.cloud.api.controller.web.data.HttpHeader;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpStatusCode;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpResponse;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class HttpResponseImpl implements HttpResponse {
-    private Collection<HttpHeader> headers = List.of();
-    private Collection<HttpCookie> cookies = List.of();
+    private Collection<HttpHeader> headers = new ArrayList<>(0);
+    private Collection<HttpCookie> cookies = new ArrayList<>(0);
     private byte[] body;
     private HttpStatusCode statusCode;
 
