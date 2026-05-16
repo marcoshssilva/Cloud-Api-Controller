@@ -58,9 +58,16 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
                 
                 HttpOperation operationAnnotation = method.getAnnotation(HttpOperation.class);
                 String fullPath = (basePath + operationAnnotation.path()).replaceAll("//+", "/");
-                String regexPath = fullPath.replaceAll("/:[^/]+", "/([^/]+)");
+                boolean isWildcard = fullPath.endsWith("/**");
+                String regexPath = fullPath.replaceAll("/:[^/]+", "/([^/]+)").replaceAll("/\\*\\*", "(/.*)?");
 
-                if (requestPath.matches(regexPath)) {
+                boolean matches = isWildcard ? requestPath.matches(regexPath) : requestPath.equals(fullPath.replaceAll("/:[^/]+", "/([^/]+)"));
+                if (!matches && isWildcard) {
+                    String prefix = regexPath.replace("(/.*)?", "");
+                    matches = requestPath.startsWith(prefix);
+                }
+
+                if (matches) {
                     if (requestMethod == HttpMethod.HEAD) {
                         return buildEmptyResponse(HttpStatusCode.OK);
                     }
