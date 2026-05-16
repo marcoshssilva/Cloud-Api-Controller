@@ -58,14 +58,15 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
                 
                 HttpOperation operationAnnotation = method.getAnnotation(HttpOperation.class);
                 String fullPath = (basePath + operationAnnotation.path()).replaceAll("//+", "/");
+                String regexPath = fullPath.replaceAll("/:[^/]+", "/([^/]+)");
 
-                if (fullPath.equals(requestPath)) {
+                if (requestPath.matches(regexPath)) {
                     if (requestMethod == HttpMethod.HEAD) {
                         return buildEmptyResponse(HttpStatusCode.OK);
                     }
 
                     if (Arrays.stream(operationAnnotation.method()).anyMatch(m -> m == requestMethod)) {
-                        return invokeMethod(beanClass, method);
+                        return invokeMethod(beanClass, method, request, fullPath, requestPath);
                     }
 
                     if (Arrays.stream(operationAnnotation.method()).noneMatch(m -> m == requestMethod)) {
@@ -78,10 +79,51 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
         return buildNotFound();
     }
 
-    private HttpResponse invokeMethod(Class<?> beanClass, Method method) {
+    private HttpResponse invokeMethod(Class<?> beanClass, Method method, HttpRequest request, String pathTemplate, String requestPath) {
         try {
             Object instance = getControllerInstance(beanClass);
-            Object result = method.invoke(instance);
+            java.lang.reflect.Parameter[] parameters = method.getParameters();
+            Object[] args = new Object[parameters.length];
+
+            // Extract path variables
+            String[] templateParts = pathTemplate.split("/");
+            String[] pathParts = requestPath.split("/");
+            java.util.Map<String, String> pathVariables = new java.util.HashMap<>();
+            for (int i = 0; i < templateParts.length; i++) {
+                if (templateParts[i].startsWith(":")) {
+                    pathVariables.put(templateParts[i].substring(1), i < pathParts.length ? pathParts[i] : "");
+                }
+            }
+
+            for (int i = 0; i < parameters.length; i++) {
+                java.lang.reflect.Parameter parameter = parameters[i];
+                if (parameter.isAnnotationPresent(com.github.marcoshssilva.cloud.api.controller.web.interfaces.RequestBody.class)) {
+                    Class<?> type = parameter.getType();
+                    if (type == String.class) {
+                        args[i] = request.getBodyAsString();
+                    } else if (type == byte[].class) {
+                        args[i] = request.getBody();
+                    } else if (type == java.io.InputStream.class) {
+                        args[i] = new java.io.ByteArrayInputStream(request.getBody());
+                    } else {
+                        args[i] = request.getBodyAsString(); // Default fallback
+                    }
+                } else if (parameter.isAnnotationPresent(com.github.marcoshssilva.cloud.api.controller.web.interfaces.PathVariable.class)) {
+                    com.github.marcoshssilva.cloud.api.controller.web.interfaces.PathVariable pv = parameter.getAnnotation(com.github.marcoshssilva.cloud.api.controller.web.interfaces.PathVariable.class);
+                    args[i] = pathVariables.get(pv.value());
+                } else if (parameter.isAnnotationPresent(com.github.marcoshssilva.cloud.api.controller.web.interfaces.QueryParam.class)) {
+                    com.github.marcoshssilva.cloud.api.controller.web.interfaces.QueryParam queryParam = parameter.getAnnotation(com.github.marcoshssilva.cloud.api.controller.web.interfaces.QueryParam.class);
+                    args[i] = request.getQueryParameters().stream()
+                            .filter(qp -> qp.name().equals(queryParam.value()))
+                            .map(com.github.marcoshssilva.cloud.api.controller.web.data.HttpQueryParam::value)
+                            .findFirst()
+                            .orElse(queryParam.defaultValue());
+                } else if (com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpRequest.class.isAssignableFrom(parameter.getType())) {
+                    args[i] = request;
+                }
+            }
+
+            Object result = method.invoke(instance, args);
             
             if (result instanceof HttpResponse httpResponse) {
                 return httpResponse;
