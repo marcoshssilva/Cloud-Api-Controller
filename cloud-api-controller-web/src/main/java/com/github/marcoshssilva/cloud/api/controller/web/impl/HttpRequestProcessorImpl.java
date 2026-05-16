@@ -5,6 +5,7 @@ import com.github.marcoshssilva.cloud.api.controller.core.utils.LoggerHelper;
 import com.github.marcoshssilva.cloud.api.controller.core.utils.WeldContainerHelper;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpMethod;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpStatusCode;
+import com.github.marcoshssilva.cloud.api.controller.web.data.ServerPort;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpController;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpOperation;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpRequest;
@@ -45,11 +46,17 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
 
         String requestPath = request.getPath();
         HttpMethod requestMethod = request.getMethod();
+        ServerPort requestServerPort = request.getPort();
 
         for (Bean<?> bean : controllers) {
             Class<?> beanClass = bean.getBeanClass();
             HttpController controllerAnnotation = beanClass.getAnnotation(HttpController.class);
             String basePath = controllerAnnotation.path();
+
+            if (controllerAnnotation.port() != requestServerPort) {
+                continue;
+            }
+            
 
             for (Method method : beanClass.getMethods()) {
                 if (!method.isAnnotationPresent(HttpOperation.class)) {
