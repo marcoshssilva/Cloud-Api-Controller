@@ -163,6 +163,11 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
         }
         return beanManager.getBeans(Object.class, new AnnotationLiteral<Any>() {}).stream()
                 .filter(bean -> bean.getBeanClass().isAnnotationPresent(HttpController.class))
+                .sorted((b1, b2) -> {
+                    HttpController c1 = b1.getBeanClass().getAnnotation(HttpController.class);
+                    HttpController c2 = b2.getBeanClass().getAnnotation(HttpController.class);
+                    return Integer.compare(c2.priority(), c1.priority());
+                })
                 .toList();
     }
 
