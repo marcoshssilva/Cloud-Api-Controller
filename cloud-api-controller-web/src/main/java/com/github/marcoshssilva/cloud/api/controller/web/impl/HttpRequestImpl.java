@@ -3,6 +3,7 @@ package com.github.marcoshssilva.cloud.api.controller.web.impl;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpCookie;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpHeader;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpMethod;
+import com.github.marcoshssilva.cloud.api.controller.web.data.HttpQueryParam;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpRequest;
 
 import java.util.Collection;
@@ -13,15 +14,17 @@ public class HttpRequestImpl implements HttpRequest {
     private String path;
     private Collection<HttpHeader> headers = List.of();
     private Collection<HttpCookie> cookies = List.of();
+    private Collection<HttpQueryParam> queryParameters = List.of();
     private byte[] body;
 
     public HttpRequestImpl() { }
 
-    public HttpRequestImpl(HttpMethod method, String path, Collection<HttpHeader> headers, Collection<HttpCookie> cookies, byte[] body) {
+    public HttpRequestImpl(HttpMethod method, String path, Collection<HttpHeader> headers, Collection<HttpCookie> cookies, Collection<HttpQueryParam> queryParameters, byte[] body) {
         this.method = method;
         this.path = path;
         this.headers = headers;
         this.cookies = cookies;
+        this.queryParameters = queryParameters;
         this.body = body;
     }
 
@@ -48,5 +51,10 @@ public class HttpRequestImpl implements HttpRequest {
     @Override
     public byte[] getBody() {
         return this.body;
+    }
+
+    @Override
+    public Collection<HttpQueryParam> getQueryParameters() {
+        return this.queryParameters;
     }
 }

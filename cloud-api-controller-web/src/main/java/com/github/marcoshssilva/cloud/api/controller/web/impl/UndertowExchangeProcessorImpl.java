@@ -3,6 +3,7 @@ package com.github.marcoshssilva.cloud.api.controller.web.impl;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpCookie;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpHeader;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpMethod;
+import com.github.marcoshssilva.cloud.api.controller.web.data.HttpQueryParam;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpRequest;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpRequestProcessor;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpResponse;
@@ -51,6 +52,7 @@ public class UndertowExchangeProcessorImpl implements UndertowExchangeProcessor 
                 exchange.getRelativePath(),
                 this.buildHeaders(exchange),
                 this.buildCookies(exchange),
+                this.buildQueryParameters(exchange),
                 body
         );
     }
@@ -71,6 +73,12 @@ public class UndertowExchangeProcessorImpl implements UndertowExchangeProcessor 
             cookies.add(new HttpCookie(cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), maxAgeLong, cookie.isSecure(), cookie.isHttpOnly()));
         }
         return cookies;
+    }
+
+    Collection<HttpQueryParam> buildQueryParameters(HttpServerExchange exchange) {
+        List<HttpQueryParam> queryParams = new ArrayList<>();
+        exchange.getQueryParameters().forEach((key, values) -> values.forEach(value -> queryParams.add(new HttpQueryParam(key, value))));
+        return queryParams;
     }
 
     void doResponse(HttpServerExchange exchange, HttpResponse response) {
