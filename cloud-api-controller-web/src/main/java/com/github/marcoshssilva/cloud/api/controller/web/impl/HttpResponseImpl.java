@@ -7,7 +7,6 @@ import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpResponse
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class HttpResponseImpl implements HttpResponse {
     private Collection<HttpHeader> headers = new ArrayList<>(0);
