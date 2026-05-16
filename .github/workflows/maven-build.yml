@@ -1,0 +1,44 @@
+name: Java CI with Maven
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17 Temurin
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Run Tests
+      run: mvn verify package
+
+    - name: Run Docker Compose with profile all
+      run: docker compose --profile all up -d
+
+    - name: Verify if health check is OK
+      run: |
+        echo "Waiting for services to be healthy..."
+        for i in {1..24}; do
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8081/health/status || echo "000")
+          if [ "$STATUS" -eq 200 ]; then
+            echo "Success: Status 200 OK"
+            exit 0
+          fi
+          echo "Attempt $i: Status $STATUS. Waiting 5s..."
+          sleep 5
+        done
+        echo "Error: Service did not return 200 OK after 2 minutes"
+        exit 1
