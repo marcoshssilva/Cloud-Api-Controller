@@ -4,6 +4,7 @@ import com.github.marcoshssilva.cloud.api.controller.web.data.HttpCookie;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpHeader;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpMethod;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpQueryParam;
+import com.github.marcoshssilva.cloud.api.controller.web.data.ServerPort;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
@@ -15,6 +16,7 @@ public interface HttpRequest {
     Collection<HttpCookie> getCookies();
     Collection<HttpQueryParam> getQueryParameters();
     byte[] getBody();
+    ServerPort getPort();
 
     default String getBodyAsString() {
         return new String(getBody(), StandardCharsets.UTF_8);

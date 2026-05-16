@@ -4,16 +4,19 @@ import com.github.marcoshssilva.cloud.api.controller.web.data.HttpCookie;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpHeader;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpMethod;
 import com.github.marcoshssilva.cloud.api.controller.web.data.HttpQueryParam;
+import com.github.marcoshssilva.cloud.api.controller.web.data.ServerPort;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpRequest;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpRequestProcessor;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.HttpResponse;
 import com.github.marcoshssilva.cloud.api.controller.web.interfaces.UndertowExchangeProcessor;
+import com.github.marcoshssilva.cloud.api.controller.web.interfaces.WebServer;
 
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderValues;
 import io.undertow.util.HttpString;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import java.nio.ByteBuffer;
@@ -27,6 +30,12 @@ import java.util.Objects;
 @Priority(Integer.MIN_VALUE)
 @ApplicationScoped
 public class UndertowExchangeProcessorImpl implements UndertowExchangeProcessor {
+    private final WebServer webServer;
+
+    @Inject
+    private UndertowExchangeProcessorImpl(WebServer webServer) {
+        this.webServer = webServer;
+    }
 
     @Override
     public void process(HttpServerExchange exchange, HttpRequestProcessor processor) {
@@ -47,13 +56,24 @@ public class UndertowExchangeProcessorImpl implements UndertowExchangeProcessor 
     }
 
     HttpRequest buildHttpRequest(HttpServerExchange exchange, byte[] body) {
+        ServerPort port;
+        int portNumber = exchange.getDestinationAddress().getPort();
+        if (portNumber == webServer.getManagementPort()) {
+            port = ServerPort.MANAGEMENT;
+        } else if (portNumber == webServer.getPort()) {
+            port = ServerPort.APPLICATION;
+        } else {
+            port = ServerPort.APPLICATION;
+        }
+                
         return new HttpRequestImpl(
-                HttpMethod.findByName(exchange.getRequestMethod().toString()),
-                exchange.getRelativePath(),
-                this.buildHeaders(exchange),
-                this.buildCookies(exchange),
-                this.buildQueryParameters(exchange),
-                body
+            HttpMethod.findByName(exchange.getRequestMethod().toString()),
+            exchange.getRelativePath(),
+            this.buildHeaders(exchange),
+            this.buildCookies(exchange),
+            this.buildQueryParameters(exchange),
+            body,
+            port
         );
     }
 
