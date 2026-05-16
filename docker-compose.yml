@@ -1,0 +1,10 @@
+services:
+  web:
+    restart: on-failure
+    image: com.github.marcoshssilva.cloud-api-controller-web:latest
+    build:
+      context: ./cloud-api-controller-web
+      dockerfile: ./src/main/docker/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
