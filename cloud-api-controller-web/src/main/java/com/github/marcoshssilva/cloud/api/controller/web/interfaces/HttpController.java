@@ -19,4 +19,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @ApplicationScoped
 public @interface HttpController {
     String path() default "/" ;
+    int priority() default Integer.MIN_VALUE;
 }
